@@ -4,14 +4,21 @@
 
 <div class="text-center">
     <h1 class="display-4">Sign Up</h1>
+
     @if (TempData["SignUpMessage"] != null)
     {
-        <div class="alert alert-success">
+        <div class="alert alert-success" role="alert">
             @TempData["SignUpMessage"]
         </div>
     }
-
-    <form method="post" action="/Account/SignUp">
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
+    else if (TempData["SignUpErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["SignUpErrorMessage"]
+        </div>
+    }
+    else
+    {
+     
+    }
 </div>
