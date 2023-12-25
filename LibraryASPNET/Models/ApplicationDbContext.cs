@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using LibraryASPNET.Models.User;
-
-namespace LibraryASPNET
+namespace LibraryASPNET.Models
 {
     public class ApplicationDbContext : DbContext
     {

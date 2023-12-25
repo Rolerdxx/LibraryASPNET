@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using LibraryASPNET.Models.User;
-using LibraryASPNET;
+using LibraryASPNET.Models;
 
 public class AccountController : Controller
 {
@@ -16,7 +15,11 @@ public class AccountController : Controller
     {
         return View();
     }
-   
+    public IActionResult Login()
+    {
+        return View(); 
+    }
+
     [HttpPost]
     [HttpGet]
     public IActionResult SignUp(User user)
