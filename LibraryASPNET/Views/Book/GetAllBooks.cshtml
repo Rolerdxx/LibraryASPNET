@@ -1,0 +1,50 @@
+﻿@model IEnumerable<LibraryASPNET.Models.Book.Book>
+@{
+    ViewData["Title"] = "Books list";
+}
+
+<div class="container">
+    <h2>Books list</h2>
+
+    <div class="row">
+        <div class="col-md-4 float-end">
+            <input type="text" class="form-control" id="search-input" placeholder="Search books By (Title, Genre)">
+        </div>
+    </div>
+
+    <div class="row mt-3" id="books-list">
+        @foreach (var book in Model)
+        {
+            <div class="col-3 card m-3">
+                <img src="https://dummyimage.com/60x60/b0b0b0/fff&text=Book+Image" class="card-img-top" alt="Image du book">
+
+                <div class="card-body">
+                    <h5 class="card-title">Title : @book.Title</h5>
+                    <p class="card-text">Genre : @book.Genre</p>
+                    <p class="card-text">Available: @book.Available</p>
+                    <a class="btn btn-outline-primary" href="GetOneBook/@book.Id">Detail</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    const searchInput = document.getElementById("search-input");
+    const booksList = document.getElementById("books-list");
+
+    searchInput.addEventListener("keyup", function () {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        booksList.querySelectorAll(".card").forEach(function (card) {
+            const title = card.querySelector(".card-title").textContent.toLowerCase();
+            const genre = card.querySelector(".card-text").textContent.toLowerCase();
+
+            if (title.includes(searchTerm) || genre.includes(searchTerm)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+</script>

@@ -1,0 +1,24 @@
+﻿@model LibraryASPNET.Models.Book.Book
+
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<div class="container">
+    <h2>Book Details</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <img src="https://dummyimage.com/200x300/b0b0b0/fff&text=Book+Image" class="img-fluid" alt="Book image">
+        </div>
+        <div class="col-md-8">
+            <h3>Title :@Model.Title</h3>
+            <p>Genre : @Model.Genre</p>
+            <p>Available: @Model.Available</p>
+            @if (Model.Available != "No")
+            {
+                <a class="btn btn-primary" href="#">Reserve not yet implemented !!!!</a>
+            }
+        </div>
+    </div>
+</div>
