@@ -20,8 +20,8 @@ public class LoginController : Controller
    
     public IActionResult Login(User user)
     {
-        if (ModelState.IsValid)
-        {
+
+   
             var existingUser = _context.users.FirstOrDefault(u => u.Email == user.Email && u.Password == user.Password);
 
             if (existingUser != null)
@@ -33,9 +33,11 @@ public class LoginController : Controller
             {
                 TempData["LoginError"] = "Invalid email or password";
             }
-        }
+        
 
-        return View(user);
+        return View();
+
+
     }
 
     public IActionResult LoginSuccess()
