@@ -1,4 +1,4 @@
-﻿namespace LibraryASPNET.Models.User;
+﻿namespace LibraryASPNET.Models;
 
 using System.ComponentModel.DataAnnotations;
 

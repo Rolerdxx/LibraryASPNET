@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LibraryASPNET.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryASPNET.Controllers.BookController
+namespace LibraryASPNET.Controllers
 {
     public class BookController : Controller
     {

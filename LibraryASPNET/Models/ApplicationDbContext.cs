@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using LibraryASPNET.Models.User;
-using LibraryASPNET.Models.Book;
-
-namespace LibraryASPNET
+namespace LibraryASPNET.Models
 {
     public class ApplicationDbContext : DbContext
     {
