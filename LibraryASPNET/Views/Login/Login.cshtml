@@ -2,13 +2,6 @@
     ViewData["Title"] = "Login";
 }
 
-@if (!string.IsNullOrEmpty(TempData["LoginSuccess"] as string))
-{
-    <div class="alert alert-success">
-        @TempData["LoginSuccess"]
-    </div>
-}
-
 @if (!string.IsNullOrEmpty(TempData["LoginError"] as string))
 {
     <div class="alert alert-danger">
@@ -26,17 +19,19 @@
                     <form method="post" action="/Login/Login">
                         <div class="form-group">
                             <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" name="Email">
+                            <input type="email" class="form-control" id="email" name="Email" required>
                         </div>
                         <div class="form-group">
                             <label for="password">Password:</label>
-                            <input type="password" class="form-control" id="password" name="Password">
+                            <input type="password" class="form-control" id="password" name="Password" required>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary">Login</button>
                         </div>
                     </form>
                     <p>Don't have an account? <a href="/Home/Index">Sign Up here</a></p>
+                    <p>Forgot Password ? <a href="/Login/ForgotPassword">Change My Password</a></p>
+                    
                 </div>
             </div>
         </div>
