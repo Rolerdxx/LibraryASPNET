@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net.Mail.Abstractions;
 using MailKit.Net.Smtp;
 using SmtpClient = System.Net.Mail.SmtpClient;
+using MimeKit;
 
 public class LoginController : Controller
 {
@@ -63,50 +64,47 @@ public class LoginController : Controller
             return RedirectToAction("UserNotFound", "Error");
         }
 
-        // Generate a reset token and set its expiration
+
         string resetToken = Guid.NewGuid().ToString();
         user.ResetToken = resetToken;
-        user.ResetTokenExpiration = DateTime.UtcNow.AddHours(1); // Example: Token expires in 1 hour
+        user.ResetTokenExpiration = DateTime.UtcNow.AddHours(1); 
 
         _context.SaveChanges();
 
-        // Send an email containing the reset link with the token
+
         string resetLink = Url.Action("ResetPassword", "Login", new { token = resetToken }, Request.Scheme);
-        string emailBody = "Please click to reset your password.";
+        string emailBody = $"Please click <a href=\"{resetLink}\">here</a> to reset your password.";
 
         await SendEmailAsync(user.Email, "Password Reset", emailBody);
 
-        return RedirectToAction("ForgotPasswordConfirmation", "User");
+        return ForgotPasswordConfirmation();
     }
 
     private async Task SendEmailAsync(string recipientEmail, string subject, string body)
     {
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress("Library Admin", "technoforge1@gmail.com"));
+        message.To.Add(new MailboxAddress("Recipient", recipientEmail));
+        message.Subject = subject;
 
-        using (var client = new SmtpClient("smtp.gmail.com", 587)) // Replace with your SMTP server details
+        message.Body = new TextPart("html")
         {
-            client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential("technoforge1@gmail.com", "HAMZA2001"); // Replace with your credentials
-            client.EnableSsl = true; // Enable SSL if required
-            /*
-            var message = new MailMessage("technoforge1@gmail.com", recipientEmail, subject, body)
-            {
-                IsBodyHtml = true
-            };
+            Text = body
+        };
 
-            await client.SendMailAsync(message);*/
+        using (var client = new MailKit.Net.Smtp.SmtpClient())
+        {
+            await client.ConnectAsync("smtp.gmail.com", 465, MailKit.Security.SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync("technoforge1@gmail.com", "nljx kjmk pxsb awdm");
 
-            var mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress("technoforge1@gmail.com");
-            mailMessage.To.Add(recipientEmail);
-            mailMessage.Subject = subject;
-            mailMessage.Body = body;
-            mailMessage.IsBodyHtml = true;
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
         }
     }
 
     public ActionResult ForgotPasswordConfirmation()
     {
-        return View();
+        return View("~/Views/Login/Login.cshtml");
     }
 
     [HttpGet]
@@ -134,7 +132,7 @@ public class LoginController : Controller
             return RedirectToAction("InvalidToken", "Error");
         }
 
-        user.Password = newPassword; // Remember to hash the password
+        user.Password = newPassword; 
         user.ResetToken = null;
         user.ResetTokenExpiration = null;
 
