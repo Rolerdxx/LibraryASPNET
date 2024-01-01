@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LibraryASPNET.Models;
+using System.Text;
+using System.Security.Cryptography;
 
 public class AccountController : Controller
 {
@@ -25,6 +27,8 @@ public class AccountController : Controller
             }
             else
             {
+                string hashedPassword = HashPassword(user.Password);
+                user.Password = hashedPassword;
                 _context.users.Add(user);
                 _context.SaveChanges();
 
@@ -42,9 +46,25 @@ public class AccountController : Controller
         return SignUpm(); 
     }
 
+    private string HashPassword(string password)
+    {
+        using (SHA256 sha256Hash = SHA256.Create())
+        {
+            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
+            }
+
+            return builder.ToString();
+        }
+    }
 
 
-        public IActionResult ShowLoginOption()
+
+    public IActionResult ShowLoginOption()
         {
         return View("~/Views/Login/Login.cshtml");
         }

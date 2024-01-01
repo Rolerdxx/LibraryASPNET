@@ -6,6 +6,7 @@ namespace LibraryASPNET.Models
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<User> users { get; set; }
+
         public DbSet<Book> books { get; set; }
         public object Users { get; internal set; }
     }

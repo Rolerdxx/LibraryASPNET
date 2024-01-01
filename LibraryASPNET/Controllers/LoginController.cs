@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LibraryASPNET.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Net;
-using System.Net.Mail;
-using System.Threading.Tasks;
-using System.Net.Mail.Abstractions;
-using MailKit.Net.Smtp;
-using SmtpClient = System.Net.Mail.SmtpClient;
 using MimeKit;
+using System.Text;
+using System.Security.Cryptography;
 
 public class LoginController : Controller
 {
@@ -25,26 +20,44 @@ public class LoginController : Controller
         TempData.Clear();
         return View();
     }
+    private string HashPassword(string password)
+    {
+        using (SHA256 sha256Hash = SHA256.Create())
+        {
+            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
+            }
+
+            return builder.ToString();
+        }
+    }
 
     [HttpPost]
     public IActionResult Login(User user)
     {
         var existingUser = _context.users.FirstOrDefault(u => u.Email == user.Email);
 
-        if (existingUser != null && existingUser.Password == user.Password)
+        if (existingUser != null)
         {
-            TempData["LoginSuccess"] = "Login successful!";
-            TempData.Remove("LoginError");
-            return RedirectToAction("GetAllBooks", "Book");
-        }
-        else if (existingUser != null && existingUser.Password != user.Password)
-        {
-            TempData["LoginError"] = "Invalid email or password";
-            return View();
+            string hashedPassword = HashPassword(user.Password);
+
+          
+            if (existingUser.Password == hashedPassword)
+            {
+                TempData["LoginSuccess"] = "Login successful!";
+                TempData.Remove("LoginError");
+                return RedirectToAction("GetAllBooks", "Book");
+            }
         }
 
+        TempData["LoginError"] = "Invalid email or password";
         return View();
     }
+
 
     [HttpGet]
     public ActionResult ForgotPassword()
@@ -60,14 +73,14 @@ public class LoginController : Controller
 
         if (user == null)
         {
-            TempData["UserNotFound"] = "User with this email does not exist.";
-            return RedirectToAction("UserNotFound", "Error");
+            TempData["LoginError"] = "User with this email does not exist.";
+            return View();
         }
 
 
         string resetToken = Guid.NewGuid().ToString();
         user.ResetToken = resetToken;
-        user.ResetTokenExpiration = DateTime.UtcNow.AddHours(1); 
+        user.ResetTokenExpiration = DateTime.UtcNow.AddMinutes(10); 
 
         _context.SaveChanges();
 
@@ -114,31 +127,38 @@ public class LoginController : Controller
 
         if (user == null)
         {
-            return RedirectToAction("InvalidToken", "Error");
+            return View();
+        }else
+        {
+            ViewBag.ResetToken = token;
+            return View();
         }
 
-        ViewBag.ResetToken = token;
-        return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> ResetPassword(string token, string newPassword)
     {
-        var user = await _context.users.FirstOrDefaultAsync(u => u.ResetToken == token && u.ResetTokenExpiration > DateTime.UtcNow);
+           var user = await _context.users.FirstOrDefaultAsync(u => u.ResetToken == token && u.ResetTokenExpiration > DateTime.UtcNow);
+        
 
         if (user == null)
         {
-            return RedirectToAction("InvalidToken", "Error");
+
+            return View();
         }
+        else
+        {
+            string hashedPassword = HashPassword(newPassword);
+            user.Password = hashedPassword;
+            user.ResetToken = null;
+            user.ResetTokenExpiration = null;
+        }
+    
+        await _context.SaveChangesAsync();
 
-        user.Password = newPassword; 
-        user.ResetToken = null;
-        user.ResetTokenExpiration = null;
-
-        _context.SaveChanges();
-
-        return RedirectToAction("Login", "User");
+        return RedirectToAction("Login", "Login");
     }
 
     public IActionResult LoginSuccess()
