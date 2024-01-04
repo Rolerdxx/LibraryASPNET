@@ -1,22 +1,69 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* Fonts and Typography */
 body {
-  margin-bottom: 60px;
+    font-family: 'Times New Roman', serif; /* Use a book-like serif font */
+    font-size: 16px;
+    line-height: 1.6; /* Adjust line height for readability */
+    color: #333; /* Dark text color */
+    background-image: url('Library.jpg');
+}
+
+/* Color Scheme */
+body {
+    background-color: #f2f9f0; /* Light green background */
+}
+
+/* Buttons and Links */
+.btn {
+    background-color: #3cb371; /* Light green button color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+    .btn:hover {
+        background-color: #2e8b57; /* Darker green on hover */
+    }
+
+/* Layout and Structure */
+.container {
+    max-width: 1200px; /* Limit content width for readability */
+    margin: 0 auto; /* Center content */
+    padding: 0 20px; /* Add padding to sides */
+}
+
+/* Navigation */
+.navbar {
+    background-color: #2e8b57; /* Dark green navbar */
+    color: white;
+    padding: 10px 0;
+}
+
+    .navbar ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar li {
+        display: inline-block;
+        margin-right: 20px;
+    }
+
+    .navbar a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .navbar a:hover {
+            color: #ccc; /* Lighter color on hover */
+        }
+
+/* Bookshelf Background */
+.bookshelf {
+    background-color: #c1e7c5; /* Lighter green bookshelf */
+    padding: 50px; /* Adjust padding for spacing */
 }
