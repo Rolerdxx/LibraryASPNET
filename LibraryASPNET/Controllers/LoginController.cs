@@ -45,11 +45,12 @@ public class LoginController : Controller
         {
             string hashedPassword = HashPassword(user.Password);
 
-          
+
             if (existingUser.Password == hashedPassword)
             {
                 TempData["LoginSuccess"] = "Login successful!";
                 TempData.Remove("LoginError");
+                TempData["ConnectedUserId"] = existingUser.Id;
                 return RedirectToAction("GetAllBooks", "Book");
             }
         }
@@ -80,7 +81,7 @@ public class LoginController : Controller
 
         string resetToken = Guid.NewGuid().ToString();
         user.ResetToken = resetToken;
-        user.ResetTokenExpiration = DateTime.UtcNow.AddMinutes(10); 
+        user.ResetTokenExpiration = DateTime.UtcNow.AddMinutes(10);
 
         _context.SaveChanges();
 
@@ -128,7 +129,8 @@ public class LoginController : Controller
         if (user == null)
         {
             return View();
-        }else
+        }
+        else
         {
             ViewBag.ResetToken = token;
             return View();
@@ -140,8 +142,8 @@ public class LoginController : Controller
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> ResetPassword(string token, string newPassword)
     {
-           var user = await _context.users.FirstOrDefaultAsync(u => u.ResetToken == token && u.ResetTokenExpiration > DateTime.UtcNow);
-        
+        var user = await _context.users.FirstOrDefaultAsync(u => u.ResetToken == token && u.ResetTokenExpiration > DateTime.UtcNow);
+
 
         if (user == null)
         {
@@ -155,7 +157,7 @@ public class LoginController : Controller
             user.ResetToken = null;
             user.ResetTokenExpiration = null;
         }
-    
+
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Login", "Login");
