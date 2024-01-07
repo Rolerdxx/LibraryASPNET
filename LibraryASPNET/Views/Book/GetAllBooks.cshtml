@@ -2,36 +2,99 @@
 @{
     ViewData["Title"] = "Books list";
 }
+
 <div class="card mt-5">
-
-<div class="container">
-    <h2>Books list</h2>
-
-    <div class="row">
-        <div class="col-md-4 float-end">
-            <input type="text" class="form-control" id="search-input" placeholder="Search books By (Title, Genre)">
+    <div class="container">
+        <div>
+            <button class="btn btn-outline-primary" onclick="toggleShowFavorites()">Show Favorite</button>
         </div>
-    </div>
-
-    <div class="row mt-3" id="books-list">
-        @foreach (var book in Model)
-        {
-            <div class="col-3 card m-3">
-                <img src="https://dummyimage.com/60x60/b0b0b0/fff&text=Book+Image" class="card-img-top" alt="Image du book">
-
-                <div class="card-body">
-                    <h5 class="card-title">Title : @book.Title</h5>
-                    <p class="card-text">Genre : @book.Genre</p>
-                    <p class="card-text">Available: @book.Available</p>
-                    <a class="btn btn-outline-primary" href="GetOneBook/@book.Id">Detail</a>
+        <div class="container">
+            <h2>Books list</h2>
+            <div class="row">
+                <div class="col-md-4 float-end">
+                    <input type="text" class="form-control" id="search-input" placeholder="Search books By (Title, Genre)">
                 </div>
             </div>
-        }
+            <div class="row mt-3" id="books-list">
+                @foreach (var book in Model)
+                {
+                    <div class="col-3 card m-3" data-is-favorite="@book.IsFavorite.ToString().ToLower()">
+                        <img src="@Url.Content(book.ImageURL)" class="card-img-top" alt="Book Image">
+                        <div class="card-body">
+                            <h5 class="card-title">Title : @book.Title</h5>
+                            <p class="card-text">Genre : @book.Genre</p>
+                            <p class="card-text">Available: @book.Available</p>
+                            <a class="btn btn-outline-primary favorite-btn" data-book-id="@book.Id" onclick="toggleFavorite(@book.Id)">
+                                <i class="fa fa-star@(book.IsFavorite ? "" : "-o")"></i>
+                                @if (book.IsFavorite)
+                                {
+                                    <span> Remove Favorite </span>
+                                }
+                                else
+                                {
+                                    <span> Add Favorite </span>
+                                }
+                            </a>
+                            <a class="btn btn-outline-primary" href="GetOneBook/@book.Id">Detail</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-</div>
 </div>
 
 <script>
+    let showFavorites = false;
+
+    function toggleShowFavorites() {
+        showFavorites = !showFavorites;
+        const books = document.querySelectorAll('#books-list .card');
+
+        books.forEach(book => {
+            const isFavorite = book.getAttribute('data-is-favorite') === 'true';
+
+            if (showFavorites) {
+                if (!isFavorite) {
+                    book.style.display = "none";
+                } else {
+                    book.style.display = "block";
+                }
+            } else {
+                book.style.display = "block";
+            }
+        });
+
+        const showFavoritesBtn = document.querySelector('.btn-outline-primary');
+        showFavoritesBtn.textContent = showFavorites ? "Show All" : "Show Favorites";
+    }
+
+    function toggleFavorite(bookId) {
+        const favoriteBtn = document.querySelector(`[data-book-id="${bookId}"]`);
+
+        fetch(`/Book/ToggleFavorite?bookId=${bookId}`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    const starIcon = favoriteBtn.querySelector('i');
+                    starIcon.classList.toggle('fa-star');
+                    starIcon.classList.toggle('fa-star-o');
+
+                    const isBookFavorite = starIcon.classList.contains('fa-star');
+                    favoriteBtn.setAttribute('onclick', `toggleFavorite(${bookId})`);
+                    window.location.reload();
+                } else {
+                    throw new Error('Failed to toggle favorite status.');
+                }
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating favorite status.');
+            });
+    }
+
     const searchInput = document.getElementById("search-input");
     const booksList = document.getElementById("books-list");
 

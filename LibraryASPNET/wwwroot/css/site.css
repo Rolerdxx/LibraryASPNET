@@ -1,20 +1,19 @@
-/* Fonts and Typography */
 body {
-    font-family: 'Times New Roman', serif; /* Use a book-like serif font */
+    font-family: 'Times New Roman', serif; 
     font-size: 16px;
-    line-height: 1.6; /* Adjust line height for readability */
-    color: #333; /* Dark text color */
+    line-height: 1.6; 
+    color: #333; 
     background-image: url('Library.jpg');
 }
 
-/* Color Scheme */
+
 body {
-    background-color: #f2f9f0; /* Light green background */
+    background-color: #f2f9f0; 
 }
 
-/* Buttons and Links */
+
 .btn {
-    background-color: #3cb371; /* Light green button color */
+    background-color: #3cb371; 
     color: white;
     border: none;
     padding: 10px 20px;
@@ -24,19 +23,19 @@ body {
 }
 
     .btn:hover {
-        background-color: #2e8b57; /* Darker green on hover */
+        background-color: #2e8b57; 
     }
 
-/* Layout and Structure */
+
 .container {
-    max-width: 1200px; /* Limit content width for readability */
-    margin: 0 auto; /* Center content */
-    padding: 0 20px; /* Add padding to sides */
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0 20px; 
 }
 
-/* Navigation */
+
 .navbar {
-    background-color: #2e8b57; /* Dark green navbar */
+    background-color: #2e8b57; 
     color: white;
     padding: 10px 0;
 }
@@ -59,11 +58,11 @@ body {
     }
 
         .navbar a:hover {
-            color: #ccc; /* Lighter color on hover */
+            color: #ccc; 
         }
 
-/* Bookshelf Background */
+
 .bookshelf {
-    background-color: #c1e7c5; /* Lighter green bookshelf */
-    padding: 50px; /* Adjust padding for spacing */
+    background-color: #c1e7c5; 
+    padding: 50px; 
 }

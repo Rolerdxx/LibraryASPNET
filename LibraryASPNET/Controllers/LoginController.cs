@@ -123,6 +123,11 @@ public class LoginController : Controller
     [HttpGet]
     public ActionResult ResetPassword(string token)
     {
+        if (!User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
         var user = _context.users.FirstOrDefault(u => u.ResetToken == token && u.ResetTokenExpiration > DateTime.UtcNow);
 
         if (user == null)
@@ -140,7 +145,9 @@ public class LoginController : Controller
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> ResetPassword(string token, string newPassword)
     {
-           var user = await _context.users.FirstOrDefaultAsync(u => u.ResetToken == token && u.ResetTokenExpiration > DateTime.UtcNow);
+
+
+        var user = await _context.users.FirstOrDefaultAsync(u => u.ResetToken == token && u.ResetTokenExpiration > DateTime.UtcNow);
         
 
         if (user == null)
