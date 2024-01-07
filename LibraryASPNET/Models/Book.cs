@@ -4,6 +4,7 @@ namespace LibraryASPNET.Models
 {
     public class Book
     {
+
         public int Id { get; set; }
 
         [Required]
@@ -14,6 +15,7 @@ namespace LibraryASPNET.Models
 
         [Required]
         public string Available { get; set; }
-
+        public string ImageURL { get; set; }
+        public bool IsFavorite { get; internal set; }
     }
 }
