@@ -12,12 +12,20 @@
             <img src="https://dummyimage.com/200x300/b0b0b0/fff&text=Book+Image" class="img-fluid" alt="Book image">
         </div>
         <div class="col-md-8">
-            <h3>Title :@Model.Title</h3>
+            <h3>Title : @Model.Title</h3>
             <p>Genre : @Model.Genre</p>
-            <p>Available: @Model.Available</p>
-            @if (Model.Available != "No")
+            @if (Model.Available.ToLower() == "yes")
             {
-                <a class="btn btn-primary" href="#">Reserve not yet implemented !!!!</a>
+                <p class="text-success fw-bold">Available: @Model.Available</p>
+                <form asp-action="Reserve" asp-controller="Reserve" method="post">
+                    <input type="hidden" name="bookId" value="@Model.Id" /> 
+                    <button type="submit" class="btn btn-success">Reserve this book</button>
+                </form>
+            }
+            else
+            {
+                <p class="text-danger fw-bold">Available: @Model.Available</p>
+                <a class="btn btn-danger disabled" href="#">Reserve not allowed (this book not Available) !!!!</a>
             }
         </div>
     </div>

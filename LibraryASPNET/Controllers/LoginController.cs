@@ -29,6 +29,7 @@ public class LoginController : Controller
             TempData["LoginSuccess"] = "Login successful!";
             TempData.Keep("LoginSuccess");
             TempData.Remove("LoginError");
+            TempData["ConnectedUserId"] = existingUser.Id;
             return RedirectToAction("GetAllBooks", "Book");
         }
         else
