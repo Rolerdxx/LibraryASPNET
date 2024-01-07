@@ -2,13 +2,6 @@
     ViewData["Title"] = "Login";
 }
 
-@if (!string.IsNullOrEmpty(TempData["LoginSuccess"] as string))
-{
-    <div class="alert alert-success">
-        @TempData["LoginSuccess"]
-    </div>
-}
-
 @if (!string.IsNullOrEmpty(TempData["LoginError"] as string))
 {
     <div class="alert alert-danger">
@@ -21,25 +14,28 @@
         <div class="col-md-6">
             <div class="card mt-5">
                 <div class="card-body">
-                    <h2 class="card-title text-center">Login</h2>
+                    <h2 class="card-title text-center mb-4">Login</h2>
 
                     <form method="post" action="/Login/Login">
                         <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" name="Email">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="Email" placeholder="Enter your email" required>
                         </div>
                         <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" class="form-control" id="password" name="Password">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="Password" placeholder="Enter your password" required>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary">Login</button>
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
                         </div>
                     </form>
-                    <p>Don't have an account? <a href="/Home/Index">Sign Up here</a></p>
+
+                    <div class="text-center mt-3">
+                        <p>Don't have an account? <a href="/Home/Index">Sign Up here</a></p>
+                        <p>Forgot your password? <a href="/Login/ForgotPassword">Reset it here</a></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
