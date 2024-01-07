@@ -1,0 +1,34 @@
+﻿@model List<LibraryASPNET.Models.Reservation>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">My Reservations</h5>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Book ID</th>
+                    <th>Date</th>
+                    <th>Duration</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var reservation in Model)
+                {
+                    <tr>
+                        <td>@reservation.BookId</td>
+                        <td>@reservation.Date</td>
+                        <td>@reservation.Duration</td>
+                        <td>
+                            <form asp-action="DeleteReservation" asp-controller="Reserve" method="post">
+                                <input type="hidden" name="reservationId" value="@reservation.Id" />
+                                <button type="submit" class="btn btn-danger" >Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

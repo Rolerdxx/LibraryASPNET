@@ -21,7 +21,17 @@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Login">Home</a>
+
                         </li>
+                        @if
+                        (ViewContext.RouteData.Values["controller"].ToString() == "Book" &&
+                        (ViewContext.RouteData.Values["action"].ToString() == "GetAllBooks" ||
+                        ViewContext.RouteData.Values["action"].ToString() == "GetOneBook"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Reserve" asp-action="MyReservations">Reservation</a>
+                            </li>
+                        }
 
                     </ul>
                 </div>

@@ -13,14 +13,16 @@ namespace LibraryASPNET.Controllers
             _context = context;
         }
 
+
+
         // GET: /Book/GetAllBooks
         [HttpGet]
         public IActionResult GetAllBooks()
         {
-            if (!User.Identity.IsAuthenticated)
+/*            if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Account"); 
-            }
+            }*/
             var books = _context.books.ToList();
             return View(books);
         }

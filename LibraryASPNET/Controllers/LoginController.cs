@@ -14,6 +14,7 @@ public class LoginController : Controller
         _context = context;
     }
 
+
     [HttpGet]
     public IActionResult Login()
     {
@@ -115,7 +116,10 @@ public class LoginController : Controller
             await client.DisconnectAsync(true);
         }
     }
-
+    public ActionResult GetAllBooks()
+    {
+        return View("~/Views/Book/GetAllBooks.cshtml");
+    }
     public ActionResult ForgotPasswordConfirmation()
     {
         return View("~/Views/Login/Login.cshtml");
@@ -124,10 +128,10 @@ public class LoginController : Controller
     [HttpGet]
     public ActionResult ResetPassword(string token)
     {
-        if (!User.Identity.IsAuthenticated)
+/*        if (!User.Identity.IsAuthenticated)
         {
             return RedirectToAction("Login", "Account");
-        }
+        }*/
 
         var user = _context.users.FirstOrDefault(u => u.ResetToken == token && u.ResetTokenExpiration > DateTime.UtcNow);
 
@@ -171,6 +175,6 @@ public class LoginController : Controller
 
     public IActionResult LoginSuccess()
     {
-        return View();
+        return View("~/Views/Book/GetAllBooks.cshtml");
     }
 }

@@ -17,10 +17,22 @@
             @if (Model.Available.ToLower() == "yes")
             {
                 <p class="text-success fw-bold">Available: @Model.Available</p>
-                <form asp-action="Reserve" asp-controller="Reserve" method="post">
-                    <input type="hidden" name="bookId" value="@Model.Id" /> 
-                    <button type="submit" class="btn btn-success">Reserve this book</button>
-                </form>
+                <button class="btn btn-success" onclick="showReservationForm()">Reserve this book</button>
+
+                <div id="reservationForm" style="display: none;">
+                    <form id="reservationForm" asp-action="ReserveForm" asp-controller="Reserve" method="post" class="mt-3">
+                        <input type="hidden" name="bookId" value="@Model.Id" />
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Date:</label>
+                            <input type="date" class="form-control" id="date" name="date" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="duration" class="form-label">Duration:</label>
+                            <input type="number" class="form-control" id="duration" name="duration" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Confirm Reservation</button>
+                    </form>
+                </div>
             }
             else
             {
@@ -30,3 +42,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    function showReservationForm() {
+        const form = document.getElementById('reservationForm');
+        form.style.display = 'block';
+    }
+</script>

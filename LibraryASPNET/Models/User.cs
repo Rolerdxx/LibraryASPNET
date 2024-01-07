@@ -2,11 +2,11 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public class User
+public class User 
 {
     public int Id { get; set; }
 
-    [Required]
+    [Required] 
     [Display(Name = "First Name")]
     public string FirstName { get; set; }
 
