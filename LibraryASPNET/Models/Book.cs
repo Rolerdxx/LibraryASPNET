@@ -13,9 +13,15 @@ namespace LibraryASPNET.Models
         [Required]
         public string Genre { get; set; }
 
+        public string Available { get; set; } = "YES";
+
         [Required]
-        public string Available { get; set; }
         public byte[] ImageData { get; set; }
-        public bool IsFavorite { get; internal set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required]
+        public bool IsFavorite { get; set; }
     }
 }

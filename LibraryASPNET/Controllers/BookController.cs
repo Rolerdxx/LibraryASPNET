@@ -14,7 +14,6 @@ namespace LibraryASPNET.Controllers
         }
 
 
-
         // GET: /Book/GetAllBooks
         [HttpGet]
         public IActionResult GetAllBooks()
