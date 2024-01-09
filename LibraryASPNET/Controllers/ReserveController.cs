@@ -13,6 +13,7 @@ namespace LibraryASPNET.Controllers
 {
     public class ReserveController : Controller
     {
+        private int? connectedUserId;
         static ReserveController()
         {
             GlobalFontSettings.FontResolver = new CustomFontResolver();
@@ -98,8 +99,8 @@ namespace LibraryASPNET.Controllers
  */
 
         public IActionResult MyReservations()
-            {   
-                if (TempData["ConnectedUserId"] != null && TempData["ConnectedUserId"] is int connectedUserId)
+        {   
+                if (connectedUserId.HasValue)
                 {
                 var reservations = _context.reservations.Where(r => r.UserId == connectedUserId).ToList();
                 return View(reservations);
@@ -107,7 +108,7 @@ namespace LibraryASPNET.Controllers
                 else { 
                 return RedirectToAction("Login", "Account"); 
                 }
-            }
+        }
 
         [HttpPost]
         public IActionResult DeleteReservation(int reservationId)
@@ -126,9 +127,9 @@ namespace LibraryASPNET.Controllers
         [HttpPost]
         public IActionResult ReserveForm(int bookId, string date, int duration)
         {
-            var connectedUserId = (int)TempData["ConnectedUserId"];
+             connectedUserId = (int)TempData["ConnectedUserId"];
 
-            _context.reservations.Add(new Reservation { BookId = bookId, Date = date, Duration = duration, UserId = connectedUserId });
+            _context.reservations.Add(new Reservation { BookId = bookId, Date = date, Duration = duration, UserId = (int)connectedUserId });
             _context.SaveChanges();
 
             var bookToUpdate = _context.books.Find(bookId);
@@ -152,11 +153,11 @@ namespace LibraryASPNET.Controllers
                 
                 string fileName = $"Reservation_{bookId}_{DateTime.Now:yyyyMMddHHmmss}.pdf";
 
-                
-                return File(pdfBytes, "application/pdf", fileName);
-            }
 
-            return RedirectToAction("GetAllBooks", "Book");
+                return File(pdfBytes, "application/pdf", fileName);             
+            }
+            
+                    return RedirectToAction("GetAllBooks", "Book");
         }
 
     }
