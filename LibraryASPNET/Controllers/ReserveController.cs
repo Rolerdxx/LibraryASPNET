@@ -13,7 +13,7 @@ namespace LibraryASPNET.Controllers
 {
     public class ReserveController : Controller
     {
-        private int? connectedUserId;
+        //private int? connectedUserId;
         static ReserveController()
         {
             GlobalFontSettings.FontResolver = new CustomFontResolver();
@@ -99,15 +99,16 @@ namespace LibraryASPNET.Controllers
  */
 
         public IActionResult MyReservations()
-        {   
-                if (connectedUserId.HasValue)
-                {
+        {
+            if (TempData["ConnectedUserId"] != null && TempData["ConnectedUserId"] is int connectedUserId)
+            {
                 var reservations = _context.reservations.Where(r => r.UserId == connectedUserId).ToList();
                 return View(reservations);
-                }
-                else { 
-                return RedirectToAction("Login", "Account"); 
-                }
+            }
+            else
+            {
+                return RedirectToAction("GetAllBooks", "Book");
+            }
         }
 
         [HttpPost]
@@ -127,38 +128,50 @@ namespace LibraryASPNET.Controllers
         [HttpPost]
         public IActionResult ReserveForm(int bookId, string date, int duration)
         {
-             connectedUserId = (int)TempData["ConnectedUserId"];
-
-            _context.reservations.Add(new Reservation { BookId = bookId, Date = date, Duration = duration, UserId = (int)connectedUserId });
-            _context.SaveChanges();
-
-            var bookToUpdate = _context.books.Find(bookId);
-            if (bookToUpdate != null)
+            try
             {
-                bookToUpdate.Available = "NO";
-                _context.SaveChanges();
+                var connectedUserId = TempData["ConnectedUserId"];
+
+                if (connectedUserId != null && int.TryParse(connectedUserId.ToString(), out int userId))
+                {
+                    _context.reservations.Add(new Reservation { BookId = bookId, Date = date, Duration = duration, UserId = userId });
+                    _context.SaveChanges();
+
+                    var bookToUpdate = _context.books.Find(bookId);
+                    if (bookToUpdate != null)
+                    {
+                        bookToUpdate.Available = "NO";
+                        _context.SaveChanges();
+                    }
+
+                    var user = _context.users.FirstOrDefault(u => u.Id == userId);
+
+                    if (user != null)
+                    {
+                        string reservationDate = date;
+                        string userEmail = user.Email;
+                        string durationString = $"{duration} Days";
+
+                        byte[] pdfBytes = GenerateReservationPdf(bookId, reservationDate, durationString, userEmail);
+
+                        string fileName = $"Reservation_{bookId}_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+
+                        return File(pdfBytes, "application/pdf", fileName);
+                    }
+                }
+
+                TempData["ErrorMessage"] = "Please log in to perform this action.";
+                return RedirectToAction("Login", "Account");
             }
-
-            var user = _context.users.FirstOrDefault(u => u.Id == connectedUserId);
-
-            if (user != null)
+            catch (Exception e)
             {
-                string reservationDate = date; 
-                string userEmail = user.Email;
-                string durationString = $"{duration} Days"; 
-
-               
-                byte[] pdfBytes = GenerateReservationPdf(bookId, reservationDate, durationString, userEmail);
-
-                
-                string fileName = $"Reservation_{bookId}_{DateTime.Now:yyyyMMddHHmmss}.pdf";
-
-
-                return File(pdfBytes, "application/pdf", fileName);             
+                TempData["ErrorMessage"] = "An error occurred while processing your request.";
+                return RedirectToAction("Error", "Home");
             }
-            
-                    return RedirectToAction("GetAllBooks", "Book");
         }
+
+
+
 
     }
 }
